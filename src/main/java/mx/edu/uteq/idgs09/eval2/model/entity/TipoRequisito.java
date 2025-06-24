@@ -1,12 +1,35 @@
+package mx.edu.uteq.idgs09.eval2.model.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
-public class tipoRequisito{
+@Table(name = "tipos_requisitos")
+@Data
+public class TipoRequisito {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    
+    @Column(nullable = false, length = 100)
+    private String nombre;
+    
+    private boolean activo = true;
+    
+    @Column(name = "fecha_creacion")
+    private LocalDateTime fechaCreacion = LocalDateTime.now();
+    
+    @Column(name = "fecha_actualizacion")
+    private LocalDateTime fechaActualizacion = LocalDateTime.now();
 
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Long id;
-
-private String nombre;
-
-@OneToMany(mappedBy = "tipoRequisito", cascade = CascadeType.ALL)
-private List<Requisito> requisitos;
+    @OneToMany(mappedBy = "tipoRequisito", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Requisito> requisitos;
+    
+    @PreUpdate
+    public void preUpdate() {
+        this.fechaActualizacion = LocalDateTime.now();
+    }
 }
